@@ -103,7 +103,7 @@
 
     //Cargar jugadores de la tabla cofres
     async function cargarCofres() {
-      const { data, error } = await supabase.from('cofres').select('*');
+      const { data, error } = await supabase.rpc('consultar_cofres');
       if (error) { alert('Error al cargar cofres'); console.error(error); return; }
 
       tablaBody.innerHTML = '';
@@ -187,3 +187,4 @@
   </script>
 </body>
 </html>
+
