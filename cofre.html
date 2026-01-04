@@ -131,7 +131,7 @@
 				
 			// Recuperar información del jugador
 			async function cargarDatosJugador() {
-			  const { data, error } = await supabase.rpc('get_cofre_jugador', {p_jugador: jugador});
+			  const { data, error } = await supabase.rpc('abrir_cofre', {p_jugador: jugador});
 
 			  if (error) {
 				alert('Error al cargar los datos del jugador');
@@ -162,4 +162,5 @@
 	
 
 </body>
+
 </html>
