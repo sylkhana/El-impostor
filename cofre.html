@@ -2,15 +2,18 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Jugador</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- CLAVE PARA MÓVIL -->
+  <title>El impostor</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+
+    html {
+      font-size: 16px;
     }
 
     body {
@@ -20,13 +23,14 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 1rem;
     }
 
     .marco-cofre {
       background: #fff;
-      padding: 40px 30px;
-      border-radius: 16px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+      padding: 2rem 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);				
       width: 100%;
       max-width: 420px;
       text-align: center;
@@ -34,57 +38,55 @@
 
     /* Jugador */
     #lbl_jugador {
-      font-size: 28px;
+      font-size: 1.8rem;
       font-weight: 700;
       color: #2575fc;
-      margin-bottom: 8px;
+      margin-bottom: 0.3rem;
+      word-break: break-word;
     }
 
     /* Ronda */
     #lbl_ronda {
-      font-size: 18px;
+      font-size: 1.1rem;
       font-weight: 700;
       color: #6a11cb;
-      margin-bottom: 25px;
+      margin-bottom: 1.5rem;
     }
 
     /* Imagen */
     #img_rol {
-      width: 140px;
-      margin: 20px 0 30px;
+      width: 40vw;
+      max-width: 150px;
+      height: auto;
+      margin: 1.5rem 0;
     }
 
-    /* Bloques tipo tarjeta */
+    /* Tarjetas */
     .card {
-      padding: 18px;
-      border-radius: 12px;
-      margin-bottom: 18px;
+      padding: 1rem;
+      border-radius: 0.8rem;
+      margin-bottom: 1rem;
       text-align: left;
-    }
-
-    .card h3 { /* Títulos de las subtarjetas */
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: right;
-      gap: 8px;
-    }
-
-    .card p { /* Textos planos de las tarjetas */
-      font-size: 15px;
-      line-height: 1.4;
-    }
-
-    /* Marco */
-    .marco {
       background: #f0f6ff;
-      border-left: 6px solid #2575fc;
+      border-left: 5px solid #2575fc;
     }
 
-    @media (max-width: 480px) {
-      .marco-cofre {
-        padding: 30px 20px;
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    /* AJUSTES EXTRA PARA MÓVIL PEQUEÑO */
+    @media (max-width: 360px) {
+      html {
+        font-size: 15px;
       }
     }
   </style>
@@ -92,75 +94,61 @@
 
 <body>
 
-	<div class="marco-cofre">
+  <div class="marco-cofre">
+    <h1 id="lbl_jugador"></h1>
+    <div id="lbl_ronda">Ronda #</div>
 
-		<h1 id="lbl_jugador"></h1>
-		<div id="lbl_ronda">Ronda #</div>
+    <img id="img_rol" src="CofreCerrado.png" alt="Rol">
 
-		<img id="img_rol" src="CofreCerrado.png" alt="Rol">
+    <div class="card">
+      <h3>Objetivo</h3>
+      <p id="txt_objetivo"></p>
+    </div>
 
-		<!-- Objetivo -->
-		<div class="card marco">
-			<h3>Objetivo</h3>
-			<p id="txt_objetivo"></p>
-		</div>
+    <div class="card">
+      <h3>Pista</h3>
+      <p id="txt_pista"></p>
+    </div>
+  </div>
 
-		<!-- Pista -->
-		<div class="card marco">
-			<h3>Pista</h3>
-			<p id="txt_pista"></p>
-		</div>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-	</div>
+    const supabase = createClient(
+      'https://fcyswptxwdzhvwekkdhl.supabase.co',
+      'sb_publishable_MxkPdd565iYMTMj2QGpFaw_ZZqbmLmv'
+    );
 
-	<script type="module">
-		// Conecta con tu proyecto Supabase
-		import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-		const supabase = createClient(
-		  'https://fcyswptxwdzhvwekkdhl.supabase.co',
-		  'sb_publishable_MxkPdd565iYMTMj2QGpFaw_ZZqbmLmv'
-		);
+    const jugador = localStorage.getItem('jugador');
 
-		const jugador = localStorage.getItem('jugador');
+    if (!jugador) {
+      window.location.href = 'login.html';
+    } else {
+      document.getElementById('lbl_jugador').textContent = jugador;
 
-		if (!jugador) {
-			window.location.href = 'login.html';
-		} 
-		else {
-			document.getElementById('lbl_jugador').textContent = jugador;
-				
-			// Recuperar información del jugador
-			async function cargarDatosJugador() {
-			  const { data, error } = await supabase.rpc('abrir_cofre', {_jugador: jugador});
+      async function cargarDatosJugador() {
+        const { data, error } = await supabase.rpc('abrir_cofre', { _jugador: jugador });
 
-			  if (error) {
-				alert('Error al cargar los datos del jugador: ' + error.message);
-				return;
-			  }
-			  const fila0 = Array.isArray(data) ? data[0] : data;
-			  
-			  // Asignar valores a los elementos de la página
-			  document.getElementById('lbl_ronda').textContent = `Ronda #${fila0.ronda}`;
-			  document.getElementById('txt_objetivo').textContent = fila0.objetivo;
-			  document.getElementById('txt_pista').textContent = fila0.pista;
-			  
-			  if (fila0.rol === "IMPOSTOR") {
-				document.getElementById('img_rol').src = "CofreLleno.png"
-			  }
-			  else if (fila0.rol === "ELIMINADO") {
-				document.getElementById('img_rol').src = "CofreCerrado.png"
-			  }
-			  else {
-				document.getElementById('img_rol').src = "CofreVacio.png"
-			  }
-			  
-			  
-			}
+        if (error) {
+          alert(error.message);
+          return;
+        }
 
-			cargarDatosJugador();		  
-		}
-	</script>
-	
+        const fila = Array.isArray(data) ? data[0] : data;
+
+        document.getElementById('lbl_ronda').textContent = `Ronda #${fila.ronda}`;
+        document.getElementById('txt_objetivo').textContent = fila.objetivo || '';
+        document.getElementById('txt_pista').textContent = fila.pista || '';
+
+        const img = document.getElementById('img_rol');
+        if (fila.rol === "IMPOSTOR") img.src = "CofreLleno.png";
+        else if (fila.rol === "ELIMINADO") img.src = "CofreCerrado.png";
+        else img.src = "CofreVacio.png";
+      }
+
+      cargarDatosJugador();
+    }
+  </script>
 
 </body>
 </html>
