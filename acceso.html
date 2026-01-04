@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Acceso</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset y tipografía */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #333;
+    }
+
+    /* Contenedor del formulario */
+    .marco {
+      background: #fff;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    /* Encabezado */
+    .marco h1 {
+      margin-bottom: 30px;
+      font-weight: 700;
+      color: #2575fc;
+    }
+
+    /* Inputs */
+    .marco input {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    .marco input:focus {
+      border-color: #2575fc;
+      outline: none;
+    }
+
+    /* Botón */
+    .marco button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background: #2575fc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .marco button:hover {
+      background: #6a11cb;
+    }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+      .marco {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+	<div class="marco">
+		<h1>Acceso</h1>
+		<form id="mrc-acceso" method="POST">
+		  <input type="text" id="jugador" name="jugador" placeholder="Jugador" required>
+		  <input type="password" id="clave" name="clave" placeholder="Clave" required>
+		  <button type="submit">Entrar</button>
+		</form>
+	</div>
+
+	<script type="module">
+	  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+	  const supabase = createClient(
+		'https://fcyswptxwdzhvwekkdhl.supabase.co',
+		'sb_publishable_MxkPdd565iYMTMj2QGpFaw_ZZqbmLmv'
+	  );
+
+	  const form = document.getElementById('mrc-acceso');
+
+	  const container = document.querySelector('.mrc-acceso');
+	  
+	  form.addEventListener('submit', async (event) => {
+		event.preventDefault();
+
+		const jugador = document.getElementById('jugador').value;
+		const clave = document.getElementById('clave').value;
+
+		try {
+		  const { data, error } = await supabase.rpc('login', {
+			p_jugador: jugador,
+			p_clave: clave
+		  });
+
+		  if (error) {
+			console.error(error);
+			alert('Error en el login');
+			return;
+		  }
+
+		  const loginOk = Array.isArray(data) ? data[0] : data;
+
+		  if (loginOk === true) {
+			localStorage.setItem('jugador', jugador);
+			if (jugador === "ADMIN") {
+				window.location.href = 'admin.html';
+			}
+			else {
+				window.location.href = 'cofre.html';
+			}
+		  } 
+		  else {
+			alert('Credenciales incorrectas');
+		  }
+		} catch (err) {
+		  console.error(err);
+		  alert('Error inesperado');
+		}
+	  });
+	</script>
+
+
+</body>
+</html>
