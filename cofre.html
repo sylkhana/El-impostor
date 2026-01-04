@@ -124,7 +124,7 @@
     if (!jugador) {
       window.location.href = 'login.html';
     } else {
-      document.getElementById('lbl_jugador').textContent = jugador;
+      document.getElementById('lbl_jugador').textContent = jugador.toUpperCase();
 
       async function cargarDatosJugador() {
         const { data, error } = await supabase.rpc('abrir_cofre', { _jugador: jugador });
@@ -152,3 +152,4 @@
 
 </body>
 </html>
+
