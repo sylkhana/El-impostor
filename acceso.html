@@ -14,11 +14,12 @@
     body {
       font-family: 'Roboto', sans-serif;
       background: linear-gradient(to right, #6a11cb, #2575fc);
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
       color: #333;
+      padding: 10px;
     }
 
     /* Contenedor del formulario */
@@ -30,6 +31,7 @@
       width: 100%;
       max-width: 400px;
       text-align: center;
+      transition: padding 0.3s;
     }
 
     /* Encabezado */
@@ -37,6 +39,7 @@
       margin-bottom: 30px;
       font-weight: 700;
       color: #2575fc;
+      font-size: 2rem;
     }
 
     /* Inputs */
@@ -46,7 +49,7 @@
       margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 1rem;
       transition: border-color 0.3s;
     }
 
@@ -64,7 +67,7 @@
       color: white;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
       transition: background 0.3s;
@@ -79,71 +82,88 @@
       .marco {
         padding: 30px 20px;
       }
+      .marco h1 {
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+      }
+      .marco input, .marco button {
+        font-size: 0.95rem;
+        padding: 10px 12px;
+      }
+    }
+
+    @media (max-width: 350px) {
+      .marco {
+        padding: 20px 15px;
+      }
+      .marco h1 {
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+      }
+      .marco input, .marco button {
+        font-size: 0.9rem;
+        padding: 8px 10px;
+      }
     }
   </style>
 </head>
 <body>
 
-	<div class="marco">
-		<h1>Acceso</h1>
-		<form id="mrc-acceso" method="POST">
-		  <input type="text" id="jugador" name="jugador" placeholder="Jugador" required>
-		  <input type="password" id="clave" name="clave" placeholder="Clave" required>
-		  <button type="submit">Entrar</button>
-		</form>
-	</div>
+  <div class="marco">
+    <h1>Acceso</h1>
+    <form id="mrc-acceso" method="POST">
+      <input type="text" id="jugador" name="jugador" placeholder="Jugador" required>
+      <input type="password" id="clave" name="clave" placeholder="Clave" required>
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
 
-	<script type="module">
-	  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-	  const supabase = createClient(
-		'https://fcyswptxwdzhvwekkdhl.supabase.co',
-		'sb_publishable_MxkPdd565iYMTMj2QGpFaw_ZZqbmLmv'
-	  );
+    const supabase = createClient(
+      'https://fcyswptxwdzhvwekkdhl.supabase.co',
+      'sb_publishable_MxkPdd565iYMTMj2QGpFaw_ZZqbmLmv'
+    );
 
-	  const form = document.getElementById('mrc-acceso');
+    const form = document.getElementById('mrc-acceso');
 
-	  const container = document.querySelector('.mrc-acceso');
-	  
-	  form.addEventListener('submit', async (event) => {
-		event.preventDefault();
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
 
-		const jugador = document.getElementById('jugador').value;
-		const clave = document.getElementById('clave').value;
+      const jugador = document.getElementById('jugador').value;
+      const clave = document.getElementById('clave').value;
 
-		try {
-		  const { data, error } = await supabase.rpc('login', {
-			p_jugador: jugador,
-			p_clave: clave
-		  });
+      try {
+        const { data, error } = await supabase.rpc('login', {
+          p_jugador: jugador,
+          p_clave: clave
+        });
 
-		  if (error) {
-			console.error(error);
-			alert('Error en el login');
-			return;
-		  }
+        if (error) {
+          console.error(error);
+          alert('Error en el login');
+          return;
+        }
 
-		  const loginOk = Array.isArray(data) ? data[0] : data;
+        const loginOk = Array.isArray(data) ? data[0] : data;
 
-		  if (loginOk === true) {
-			localStorage.setItem('jugador', jugador);
-			if (jugador === "ADMIN") {
-				window.location.href = 'admin.html';
-			}
-			else {
-				window.location.href = 'cofre.html';
-			}
-		  } 
-		  else {
-			alert('Credenciales incorrectas');
-		  }
-		} catch (err) {
-		  console.error(err);
-		  alert('Error inesperado');
-		}
-	  });
-	</script>
-
+        if (loginOk === true) {
+          localStorage.setItem('jugador', jugador);
+          if (jugador === "ADMIN") {
+            window.location.href = 'admin.html';
+          } else {
+            window.location.href = 'cofre.html';
+          }
+        } else {
+          alert('Credenciales incorrectas');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error inesperado');
+      }
+    });
+  </script>
 
 </body>
 </html>
