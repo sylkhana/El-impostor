@@ -2,16 +2,16 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Acceso</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* Reset y tipografía */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
+
     body {
       font-family: 'Roboto', sans-serif;
       background: linear-gradient(to right, #6a11cb, #2575fc);
@@ -19,38 +19,32 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #333;
-      padding: 10px;
+      padding: 1rem;
     }
 
-    /* Contenedor del formulario */
     .marco {
       background: #fff;
-      padding: 40px 30px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      width: 100%;
+      width: 90%;
       max-width: 400px;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 1rem 2rem rgba(0,0,0,0.2);
       text-align: center;
-      transition: padding 0.3s;
     }
 
-    /* Encabezado */
     .marco h1 {
-      margin-bottom: 30px;
-      font-weight: 700;
       color: #2575fc;
       font-size: 2rem;
+      margin-bottom: 1.5rem;
     }
 
-    /* Inputs */
     .marco input {
       width: 100%;
-      padding: 12px 15px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      margin-bottom: 1rem;
       font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
       transition: border-color 0.3s;
     }
 
@@ -59,17 +53,15 @@
       outline: none;
     }
 
-    /* Botón */
     .marco button {
       width: 100%;
-      padding: 12px;
-      margin-top: 15px;
-      background: #2575fc;
-      color: white;
-      border: none;
-      border-radius: 8px;
+      padding: 0.8rem 0;
       font-size: 1rem;
       font-weight: 700;
+      border: none;
+      border-radius: 0.5rem;
+      background: #2575fc;
+      color: #fff;
       cursor: pointer;
       transition: background 0.3s;
     }
@@ -78,38 +70,22 @@
       background: #6a11cb;
     }
 
-    /* Responsive */
-    @media (max-width: 500px) {
-      .marco {
-        padding: 30px 20px;
-      }
-      .marco h1 {
-        font-size: 1.6rem;
-        margin-bottom: 20px;
-      }
-      .marco input, .marco button {
-        font-size: 0.95rem;
-        padding: 10px 12px;
-      }
-    }
-
+    /* Media queries para móviles muy pequeños */
     @media (max-width: 350px) {
       .marco {
-        padding: 20px 15px;
+        padding: 1rem;
       }
       .marco h1 {
-        font-size: 1.4rem;
-        margin-bottom: 15px;
+        font-size: 1.5rem;
       }
       .marco input, .marco button {
         font-size: 0.9rem;
-        padding: 8px 10px;
+        padding: 0.6rem;
       }
     }
   </style>
 </head>
 <body>
-
   <div class="marco">
     <h1>Acceso</h1>
     <form id="mrc-acceso" method="POST">
@@ -121,17 +97,14 @@
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
     const supabase = createClient(
       'https://fcyswptxwdzhvwekkdhl.supabase.co',
       'sb_publishable_MxkPdd565iYMTMj2QGpFaw_ZZqbmLmv'
     );
 
     const form = document.getElementById('mrc-acceso');
-
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
-
       const jugador = document.getElementById('jugador').value;
       const clave = document.getElementById('clave').value;
 
@@ -141,31 +114,17 @@
           p_clave: clave
         });
 
-        if (error) {
-          console.error(error);
-          alert('Error en el login');
-          return;
-        }
+        if (error) { alert('Error en el login'); return; }
 
         const loginOk = Array.isArray(data) ? data[0] : data;
-
         if (loginOk === true) {
           localStorage.setItem('jugador', jugador);
-          if (jugador === "ADMIN") {
-            window.location.href = 'admin.html';
-          } else {
-            window.location.href = 'cofre.html';
-          }
-        } else {
-          alert('Credenciales incorrectas');
-        }
+          window.location.href = jugador === "ADMIN" ? 'admin.html' : 'cofre.html';
+        } else { alert('Credenciales incorrectas'); }
       } catch (err) {
-        console.error(err);
         alert('Error inesperado');
       }
     });
   </script>
-
 </body>
 </html>
-
