@@ -156,12 +156,12 @@
     <label for="clave">Clave</label>
     <textarea id="clave" rows="1"></textarea>
 
-    <button id="guardar">Guardar</button>
+    <button id="guardar" type="button">Guardar</button>
   </div>
 
   <script type="module">
+	//Conexión a la BBDD
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
     const supabase = createClient(
       'https://fcyswptxwdzhvwekkdhl.supabase.co',
       'sb_publishable_MxkPdd565iYMTMj2QGpFaw_ZZqbmLmv'
@@ -169,7 +169,8 @@
 
     const tablaBody = document.querySelector('#tabla_cofres tbody');
 
-    async function cargarCofres() {
+	//Definición de la función de ConsultarCofres
+    async function ConsultarCofres() {
       const { data, error } = await supabase.rpc('consultar_cofres');
       if (error) return alert('Error al cargar cofres');
 
@@ -191,8 +192,52 @@
         tablaBody.appendChild(tr);
       });
     }
+	
+	//Llamada a la función ConsultarCofres para mostrar los datos
+    ConsultarCofres();
+		
+	
+    //Evento click en el boton guardar para guardar cambios
+    document.getElementById('guardar').addEventListener('click', async () => {
+      const ronda = parseInt(document.getElementById('ronda').value);
+      const objetivoImpostor = document.getElementById('objetivo_impostor').value;
+      const objetivoContendiente = document.getElementById('objetivo_contendiente').value;
+      const clave = document.getElementById('clave').value;
 
-    cargarCofres();
+
+      // 2b. Actualizar datos de cada jugador
+      const filas = Array.from(tablaBody.querySelectorAll('tr'));
+      for (const fila of filas) {
+		console.log("fila");
+        const jugador = fila.cells[0].textContent;
+        const rol = fila.cells[1].querySelector('select').value;
+        var pista = fila.cells[2].querySelector('input').value;
+		var objetivo = ""
+		
+		if (rol === "IMPOSTOR") {
+			objetivo = objetivoImpostor
+		}
+		else if (rol == "ELIMINADO") {
+			objetivo = ""
+			pista = ""
+		}
+		else {
+			objetivo = objetivoContendiente
+		}
+		
+        const { error } = await supabase.rpc('actualizar_cofre', {p_clave: clave,
+																  p_jugador: jugador, 
+																  p_ronda: ronda,
+																  p_rol: rol,
+																  p_pista: pista,
+																  p_objetivo: objetivo})
+
+        if (error) console.error('Error al actualizar jugador', jugador, error);
+      }
+
+      alert('Datos guardados correctamente');
+
+    });
   </script>
 
 </body>
