@@ -163,15 +163,7 @@
 	  border-radius: 0.5rem;
 	  font-weight: 700;
 	}
-	function mostrarModal(texto, titulo = 'Aviso') {
-	  document.getElementById('modal-title').textContent = titulo;
-	  document.getElementById('modal-text').textContent = texto;
-	  document.getElementById('modal').classList.remove('hidden');
-	}
 
-	function cerrarModal() {
-	  document.getElementById('modal').classList.add('hidden');
-	}	
   </style>
 </head>
 
@@ -215,7 +207,17 @@
 		<button onclick="cerrarModal()">Aceptar</button>
 	  </div>
 	</div>
-	
+  <script>
+	function mostrarModal(texto, titulo = 'Aviso') {
+	  document.getElementById('modal-title').textContent = titulo;
+	  document.getElementById('modal-text').textContent = texto;
+	  document.getElementById('modal').classList.remove('hidden');
+	}
+
+	function cerrarModal() {
+	  document.getElementById('modal').classList.add('hidden');
+	}
+  </script>	
   <script type="module">
 	//Conexión a la BBDD
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';

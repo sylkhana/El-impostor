@@ -122,17 +122,7 @@
 	  border: none;
 	  border-radius: 0.5rem;
 	  font-weight: 700;
-	}
-	function mostrarModal(texto, titulo = 'Aviso') {
-	  document.getElementById('modal-title').textContent = titulo;
-	  document.getElementById('modal-text').textContent = texto;
-	  document.getElementById('modal').classList.remove('hidden');
-	}
-
-	function cerrarModal() {
-	  document.getElementById('modal').classList.add('hidden');
-	}
-	
+	}	
   </style>
 </head>
 <body>
@@ -144,7 +134,17 @@
       <button type="submit">Entrar</button>
     </form>
   </div>
+  <script>
+	function mostrarModal(texto, titulo = 'Aviso') {
+	  document.getElementById('modal-title').textContent = titulo;
+	  document.getElementById('modal-text').textContent = texto;
+	  document.getElementById('modal').classList.remove('hidden');
+	}
 
+	function cerrarModal() {
+	  document.getElementById('modal').classList.add('hidden');
+	}
+  </script>
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
     const supabase = createClient(
