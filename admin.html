@@ -85,6 +85,9 @@
     <label for="objetivo_contendiente">Objetivo contendientes</label>
     <textarea id="objetivo_contendiente" rows="2"></textarea>
 
+	<label for="clave">Clave</label>
+    <textarea id="clave" rows="1"></textarea>
+
     <button id="guardar">Guardar</button>
   </div>
 
@@ -144,7 +147,7 @@
       const ronda = parseInt(document.getElementById('ronda').value);
       const objetivoImpostor = document.getElementById('objetivo_impostor').value;
       const objetivoContendiente = document.getElementById('objetivo_contendiente').value;
-
+	  const clave = document.getElementById('clave').value;
 
       // 2b. Actualizar datos de cada jugador
       const filas = Array.from(tablaBody.querySelectorAll('tr'));
@@ -166,9 +169,13 @@
 			objetivo = objetivoContendiente
 		}
 		
-        const { error } = await supabase.from('cofres')
-          .update({ rol: rol, pista: pista, ronda: ronda, objetivo: objetivo })
-          .eq('jugador', jugador);
+		const { error } = await supabase.rpc('actualizar_cofre', {p_jugador: jugador,
+																  p_rol: rol,
+																  p_pista: pista,
+																  p_objetivo: objetivo,
+																  p_ronda: ronda,
+																  p_clave: clave
+																});
         if (error) console.error('Error al actualizar jugador', jugador, error);
       }
 

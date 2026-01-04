@@ -131,11 +131,7 @@
 				
 			// Recuperar información del jugador
 			async function cargarDatosJugador() {
-			  const { data, error } = await supabase
-				.from('cofres')
-				.select('*')
-				.eq('jugador', jugador)            // Filtro
-				.single();                         // Devuelve un solo registro
+			  const { data, error } = await supabase.rpc('get_cofre_jugador', {p_jugador: jugador});
 
 			  if (error) {
 				alert('Error al cargar los datos del jugador');
