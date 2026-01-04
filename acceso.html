@@ -107,7 +107,7 @@
       event.preventDefault();
       const jugador = document.getElementById('jugador').value;
       const clave = document.getElementById('clave').value;
-
+      console.log(jugador)
       try {
         const { data, error } = await supabase.rpc('login', {
           p_jugador: jugador,
@@ -122,6 +122,8 @@
           if (jugador === "admin") {
             window.location.href = 'admin.html';
           } else {
+            alert(jugador);
+            return;
             window.location.href = 'cofre.html';
           }
         } else { alert('Credenciales incorrectas'); }
@@ -132,5 +134,6 @@
   </script>
 </body>
 </html>
+
 
 
