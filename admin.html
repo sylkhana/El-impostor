@@ -2,11 +2,18 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: 'Roboto', sans-serif;
       background: linear-gradient(to right, #6a11cb, #2575fc);
@@ -14,70 +21,131 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #333;
+      padding: 1rem;
     }
+
     .admin-container {
       background: #fff;
-      padding: 40px 30px;
-      border-radius: 14px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-      width: 100%;
-      max-width: 700px;
-      text-align: center;
+      width: 95%;
+      max-width: 900px;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 1rem 2rem rgba(0,0,0,0.25);
     }
-    h1 { color: #2575fc; margin-bottom: 20px; }
-    label { display: block; margin-top: 15px; font-weight: 700; }
+
+    h1 {
+      color: #2575fc;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-size: 2rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
     input, select, textarea, button {
       width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 8px;
+      padding: 0.7rem;
+      margin-top: 0.4rem;
+      border-radius: 0.5rem;
       border: 1px solid #ccc;
-      font-size: 16px;
+      font-size: 1rem;
     }
+
+    textarea {
+      resize: vertical;
+    }
+
     button {
       background: #2575fc;
       color: white;
       font-weight: 700;
-      margin-top: 20px;
+      margin-top: 1.5rem;
       cursor: pointer;
       transition: background 0.3s;
     }
-    button:hover { background: #6a11cb; }
+
+    button:hover {
+      background: #6a11cb;
+    }
+
+    /* Tabla responsive */
+    .tabla-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 1.5rem;
+    }
 
     table {
       width: 100%;
+      min-width: 600px;
       border-collapse: collapse;
-      margin-top: 20px;
     }
+
     th, td {
       border: 1px solid #ccc;
-      padding: 8px;
+      padding: 0.5rem;
       text-align: center;
+      font-size: 0.95rem;
     }
-    th { background: #f0f0f0; }
+
+    th {
+      background: #f0f0f0;
+      font-weight: 700;
+    }
+
+    /* Móviles */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      label {
+        font-size: 0.95rem;
+      }
+
+      input, select, textarea, button {
+        font-size: 0.9rem;
+        padding: 0.6rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .admin-container {
+        padding: 1.2rem;
+      }
+
+      h1 {
+        font-size: 1.4rem;
+      }
+    }
   </style>
 </head>
 
 <body>
+
   <div class="admin-container">
     <h1>Panel Admin</h1>
 
     <label for="ronda">Número de ronda</label>
     <input type="number" id="ronda" value="1" min="1">
 
-    <table id="tabla_cofres">
-      <thead>
-        <tr>
-          <th>Jugador</th>
-          <th>Rol</th>
-          <th>Pista</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Filas dinámicas desde JS -->
-      </tbody>
-    </table>
+    <div class="tabla-wrapper">
+      <table id="tabla_cofres">
+        <thead>
+          <tr>
+            <th>Jugador</th>
+            <th>Rol</th>
+            <th>Pista</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
     <label for="objetivo_impostor">Objetivo impostor</label>
     <textarea id="objetivo_impostor" rows="2"></textarea>
@@ -85,7 +153,7 @@
     <label for="objetivo_contendiente">Objetivo contendientes</label>
     <textarea id="objetivo_contendiente" rows="2"></textarea>
 
-	<label for="clave">Clave</label>
+    <label for="clave">Clave</label>
     <textarea id="clave" rows="1"></textarea>
 
     <button id="guardar">Guardar</button>
@@ -101,87 +169,31 @@
 
     const tablaBody = document.querySelector('#tabla_cofres tbody');
 
-    //Cargar jugadores de la tabla cofres
     async function cargarCofres() {
       const { data, error } = await supabase.rpc('consultar_cofres');
-      if (error) { alert('Error al cargar cofres'); console.error(error); return; }
+      if (error) return alert('Error al cargar cofres');
 
-	  tablaBody.innerHTML = '';
+      tablaBody.innerHTML = '';
       data.forEach(j => {
         const tr = document.createElement('tr');
 
-        // Jugador (texto fijo)
-        const tdJugador = document.createElement('td');
-        tdJugador.textContent = j.jugador;
-        tr.appendChild(tdJugador);
-
-        // Rol (select)
-        const tdRol = document.createElement('td');
-        const select = document.createElement('select');
-        ['IMPOSTOR','CONTENDIENTE','ELIMINADO'].forEach(r => {
-          const option = document.createElement('option');
-          option.value = r;
-          option.textContent = r;
-          if(r === j.rol) option.selected = true;
-          select.appendChild(option);
-        });
-        tdRol.appendChild(select);
-        tr.appendChild(tdRol);
-
-        // Pista (input)
-        const tdPista = document.createElement('td');
-        const inputPista = document.createElement('input');
-        inputPista.type = 'text';
-        inputPista.value = j.pista || '';
-        tdPista.appendChild(inputPista);
-        tr.appendChild(tdPista);
-
+        tr.innerHTML = `
+          <td>${j.jugador}</td>
+          <td>
+            <select>
+              <option ${j.rol === 'IMPOSTOR' ? 'selected' : ''}>IMPOSTOR</option>
+              <option ${j.rol === 'CONTENDIENTE' ? 'selected' : ''}>CONTENDIENTE</option>
+              <option ${j.rol === 'ELIMINADO' ? 'selected' : ''}>ELIMINADO</option>
+            </select>
+          </td>
+          <td><input type="text" value="${j.pista || ''}"></td>
+        `;
         tablaBody.appendChild(tr);
       });
     }
 
     cargarCofres();
-
-    // 2️. Guardar cambios
-    document.getElementById('guardar').addEventListener('click', async () => {
-      const ronda = parseInt(document.getElementById('ronda').value);
-      const objetivoImpostor = document.getElementById('objetivo_impostor').value;
-      const objetivoContendiente = document.getElementById('objetivo_contendiente').value;
-	  const clave = document.getElementById('clave').value;
-
-      // 2b. Actualizar datos de cada jugador
-      const filas = Array.from(tablaBody.querySelectorAll('tr'));
-      for (const fila of filas) {
-		const jugador = fila.cells[0].textContent;
-        const rol = fila.cells[1].querySelector('select').value;
-        var pista = fila.cells[2].querySelector('input').value;
-		var objetivo = ""
-		
-		if (rol === "IMPOSTOR") {
-			objetivo = objetivoImpostor
-		}
-		else if (rol == "ELIMINADO") {
-			objetivo = ""
-			pista = ""
-		}
-		else {
-			objetivo = objetivoContendiente
-		}
-		const { error } = await supabase.rpc('actualizar_cofre', {p_jugador: jugador,
-																  p_rol: rol,
-																  p_pista: pista,
-																  p_objetivo: objetivo,
-																  p_ronda: ronda,
-																  p_clave: clave
-																});
-        if (error) console.error('Error al actualizar jugador', jugador, error);
-      }
-
-
-
-      alert('Datos guardados correctamente');
-      cargarCofres();
-    });
   </script>
+
 </body>
 </html>
