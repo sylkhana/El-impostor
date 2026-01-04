@@ -119,7 +119,11 @@
         const loginOk = Array.isArray(data) ? data[0] : data;
         if (loginOk === true) {
           localStorage.setItem('jugador', jugador);
-          window.location.href = jugador === "admin" ? 'admin.html' : 'cofre.html';
+          if (jugador === "admin") {
+            window.location.href = 'admin.html';
+          } else {
+            window.location.href = 'cofre.html';
+          }
         } else { alert('Credenciales incorrectas'); }
       } catch (err) {
         alert('Error inesperado');
@@ -128,4 +132,5 @@
   </script>
 </body>
 </html>
+
 
