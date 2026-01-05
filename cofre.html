@@ -82,6 +82,31 @@
       line-height: 1.4;
       word-wrap: break-word;
     }
+	
+    /* Tabla responsive */
+    .tabla-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      max-width: 420px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    th {
+      background: #77BCFF;
+      font-weight: 700;
+    }	
 
     /* AJUSTES EXTRA PARA MÓVIL PEQUEÑO */
     @media (max-width: 360px) {
@@ -150,6 +175,19 @@
       <h3>Pista</h3>
       <p id="txt_pista"></p>
     </div>
+	<div class="card">
+      <h3>Ranking</h3>         
+      <table id="tabla_ranking">
+        <thead>
+          <tr>
+            <th>Jugador</th>
+            <th>Puntos</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    
+    </div>
   </div>
 
  	<div id="modal" class="modal hidden">
@@ -180,10 +218,10 @@
       'sb_publishable_MxkPdd565iYMTMj2QGpFaw_ZZqbmLmv'
     );
 
-    const jugador = localStorage.getItem('jugador');
+    const jugador = sessionStorage.getItem('jugador');
 
     if (!jugador) {
-      window.location.href = 'login.html';
+      window.location.href = 'acceso.html';
     } else {
       document.getElementById('lbl_jugador').textContent = jugador.toUpperCase();
 
@@ -208,6 +246,27 @@
       }
 
       cargarDatosJugador();
+	  
+		//Vinculams el HTML de la tabla_ranking a una variable
+		const BodyTablaRanking = document.querySelector('#tabla_ranking tbody');
+
+		async function cargarRanking() {
+		
+			const { data, error } = await supabase.rpc('consultar_ranking');
+			if (error) return mostrarModal('Error al cargar el ranking');
+			BodyTablaRanking.innerHTML = '';
+			data.forEach(j => {
+									const tr = document.createElement('tr');
+									tr.innerHTML = `
+									  <td>${j.jugador}</td>
+									  <td>${j.puntos}</td>
+									`;
+									tabla_ranking.appendChild(tr);			
+								}
+						);
+		  
+		}
+		cargarRanking();
     }
   </script>
 

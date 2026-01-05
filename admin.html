@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin</title>
+  <title>El impostor</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
@@ -181,6 +181,7 @@
           <tr>
             <th>Jugador</th>
             <th>Rol</th>
+            <th>Puntos</th>
             <th>Pista</th>
           </tr>
         </thead>
@@ -226,7 +227,8 @@
       'sb_publishable_MxkPdd565iYMTMj2QGpFaw_ZZqbmLmv'
     );
 
-    const tablaBody = document.querySelector('#tabla_cofres tbody');
+    //Vinculams el HTML de la tabla a una variable
+	const tablaBody = document.querySelector('#tabla_cofres tbody');
 
 	//Definición de la función de ConsultarCofres
     async function ConsultarCofres() {
@@ -245,7 +247,8 @@
               <option ${j.rol === 'CONTENDIENTE' ? 'selected' : ''}>CONTENDIENTE</option>
               <option ${j.rol === 'ELIMINADO' ? 'selected' : ''}>ELIMINADO</option>
             </select>
-          </td>
+          </td>		  
+		  <td><input type="number" value="${j.puntos ?? ''}"></td>
           <td><input type="text" value="${j.pista || ''}"></td>
         `;
         tablaBody.appendChild(tr);
@@ -267,10 +270,10 @@
       // 2b. Actualizar datos de cada jugador
       const filas = Array.from(tablaBody.querySelectorAll('tr'));
       for (const fila of filas) {
-		console.log("fila");
         const jugador = fila.cells[0].textContent;
         const rol = fila.cells[1].querySelector('select').value;
-        var pista = fila.cells[2].querySelector('input').value;
+		const puntos = fila.cells[2].querySelector('input').value;
+        var pista = fila.cells[3].querySelector('input').value;
 		var objetivo = ""
 		
 		if (rol === "IMPOSTOR") {
@@ -288,6 +291,7 @@
 																  p_jugador: jugador, 
 																  p_ronda: ronda,
 																  p_rol: rol,
+																  p_puntos: puntos,
 																  p_pista: pista,
 																  p_objetivo: objetivo})
 
