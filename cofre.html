@@ -188,6 +188,12 @@
       </table>
     
     </div>
+  
+	<div class="card">
+      <h3>Instrucciones para el siguiente juego</h3>
+      <p id="txt_instr"></p>
+	  <img id="img_instr" src="" alt="Instr">
+    </div>
   </div>
 
  	<div id="modal" class="modal hidden">
@@ -238,16 +244,19 @@
         document.getElementById('lbl_ronda').textContent = `Ronda #${fila.ronda}`;
         document.getElementById('txt_objetivo').textContent = fila.objetivo || '';
         document.getElementById('txt_pista').textContent = fila.pista || '';
+		document.getElementById('txt_instr').textContent = fila.instr || '';
 
-        const img = document.getElementById('img_rol');
-        if (fila.rol === "IMPOSTOR") img.src = "CofreLleno.png";
-        else if (fila.rol === "ELIMINADO") img.src = "CofreCerrado.png";
-        else img.src = "CofreVacio.png";
+        const img_rol = document.getElementById('img_rol');
+        if (fila.rol === "IMPOSTOR") img_rol.src = "CofreLleno.png";
+        else if (fila.rol === "ELIMINADO") img_rol.src = "CofreCerrado.png";
+        else img_rol.src = "CofreVacio.png";
+		
+		img_instr.src = 'Instrucciones/' + fila.instr + '.png';
       }
 
       cargarDatosJugador();
 	  
-		//Vinculams el HTML de la tabla_ranking a una variable
+		//Vinculams el HTML de la tabla a una variable
 		const BodyTablaRanking = document.querySelector('#tabla_ranking tbody');
 
 		async function cargarRanking() {

@@ -169,37 +169,42 @@
 
 <body>
 
-  <div class="admin-container">
-    <h1>Panel Admin</h1>
+	<div class="admin-container">
+		<h1>Panel Admin</h1>
 
-    <label for="ronda">Número de ronda</label>
-    <input type="number" id="ronda" value="1" min="1">
+		
+		<label for="ronda">Número de siguiente ronda</label>
+		<input type="number" id="ronda" value="1" min="1">
 
-    <div class="tabla-wrapper">
-      <table id="tabla_cofres">
-        <thead>
-          <tr>
-            <th>Jugador</th>
-            <th>Rol</th>
-            <th>Puntos</th>
-            <th>Pista</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+		<label for="instr">Num juego instrucciones</label>
+		<textarea id="instr" rows="1"></textarea>
+		
+		
+		<div class="tabla-wrapper">
+		  <table id="tabla_cofres">
+			<thead>
+			  <tr>
+				<th>Jugador</th>
+				<th>Rol</th>
+				<th>Puntos</th>
+				<th>Pista</th>
+			  </tr>
+			</thead>
+			<tbody></tbody>
+		  </table>
+		</div>
 
-    <label for="objetivo_impostor">Objetivo impostor</label>
-    <textarea id="objetivo_impostor" rows="2"></textarea>
+		<label for="objetivo_impostor">Objetivo impostor</label>
+		<textarea id="objetivo_impostor" rows="2"></textarea>
 
-    <label for="objetivo_contendiente">Objetivo contendientes</label>
-    <textarea id="objetivo_contendiente" rows="2"></textarea>
+		<label for="objetivo_contendiente">Objetivo contendientes</label>
+		<textarea id="objetivo_contendiente" rows="2"></textarea>
 
-    <label for="clave">Clave</label>
-    <textarea id="clave" rows="1"></textarea>
+		<label for="clave">Clave de admin</label>
+		<textarea id="clave" rows="1"></textarea>
 
-    <button id="guardar" type="button">Guardar</button>
-  </div>
+		<button id="guardar" type="button">Guardar</button>
+	</div>
   
 	<div id="modal" class="modal hidden">
 	  <div class="modal-box">
@@ -208,7 +213,7 @@
 		<button onclick="cerrarModal()">Aceptar</button>
 	  </div>
 	</div>
-  <script>
+	<script>
 	function mostrarModal(texto, titulo = 'Aviso') {
 	  document.getElementById('modal-title').textContent = titulo;
 	  document.getElementById('modal-text').textContent = texto;
@@ -219,7 +224,7 @@
 	  document.getElementById('modal').classList.add('hidden');
 	}
   </script>	
-  <script type="module">
+	<script type="module">
 	//Conexión a la BBDD
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
     const supabase = createClient(
@@ -262,6 +267,7 @@
     //Evento click en el boton guardar para guardar cambios
     document.getElementById('guardar').addEventListener('click', async () => {
       const ronda = parseInt(document.getElementById('ronda').value);
+	  const instr = parseInt(document.getElementById('instr').value);
       const objetivoImpostor = document.getElementById('objetivo_impostor').value;
       const objetivoContendiente = document.getElementById('objetivo_contendiente').value;
       const clave = document.getElementById('clave').value;
@@ -278,12 +284,14 @@
 		
 		if (rol === "IMPOSTOR") {
 			objetivo = objetivoImpostor
+			pista = ""
 		}
 		else if (rol == "ELIMINADO") {
 			objetivo = ""
 			pista = ""
 		}
 		else {
+			objetivo = ""
 			objetivo = objetivoContendiente
 		}
 		
@@ -293,7 +301,8 @@
 																  p_rol: rol,
 																  p_puntos: puntos,
 																  p_pista: pista,
-																  p_objetivo: objetivo})
+																  p_objetivo: objetivo,
+																  p_instr: instr})
 
         if (error) console.error('Error al actualizar jugador', jugador, error);
       }
