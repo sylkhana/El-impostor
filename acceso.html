@@ -169,7 +169,7 @@
         const loginOk = Array.isArray(data) ? data[0] : data;
         if (loginOk === true) {
           sessionStorage.setItem('jugador', jugador);
-		  if (jugador === "admin") {
+		  if (jugador.toUpperCase() === "ADMIN") {
 			window.location.href = 'admin.html'
 		  }
 		  else {
