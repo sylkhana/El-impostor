@@ -154,6 +154,23 @@
 	  border-radius: 0.5rem;
 	  font-weight: 700;
 	}
+	
+	//Ancho de la imagen instr
+	#img_instr {
+	  width: 100%;
+	  height: auto;
+	  display: block;
+	  margin-top: 0.8rem;
+	  border-radius: 0.5rem; /* opcional, queda bonito */
+	}
+	.card img {
+	  max-width: 100%;
+	  width: 100%;
+	  height: auto;
+	  display: block;
+	}
+	
+	
 
   </style>
 </head>
@@ -244,15 +261,16 @@
         document.getElementById('lbl_ronda').textContent = `Ronda #${fila.ronda}`;
         document.getElementById('txt_objetivo').textContent = fila.objetivo || '';
         document.getElementById('txt_pista').textContent = fila.pista || '';
-		document.getElementById('txt_instr').textContent = fila.instr || '';
 
+		//Establecer la imagen del rol (cofre lleno, vacio o cerrado)
         const img_rol = document.getElementById('img_rol');
         if (fila.rol === "IMPOSTOR") img_rol.src = "CofreLleno.png";
         else if (fila.rol === "ELIMINADO") img_rol.src = "CofreCerrado.png";
         else img_rol.src = "CofreVacio.png";
 		
+		//Estableceer la imagen de las instrucciones
 		const img_instr = document.getElementById('img_instr');
-		img_instr.src = 'Instrucciones/2.png'; //img_instr.src = 'Instrucciones/' + fila.instr + '.png';
+		img_instr.src = 'Instrucciones/' + fila.instr + '.png';
       }
 
       cargarDatosJugador();
